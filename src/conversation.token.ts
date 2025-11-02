@@ -1,1 +1,4 @@
-// 빈 파일 방지
+export const CONVERSATION_TOKENS = {
+    
+
+};
