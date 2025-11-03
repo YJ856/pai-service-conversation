@@ -16,14 +16,37 @@ function toBigIntOrNull(value: string | null | undefined): bigint | null {
 
 @Injectable()
 export class RecordConversationMapper {
-    toCommand(childProfileId: number, dto: RecordConversationRequestDto): RecordConversationCommand {
+    toCommand(childProfileId: number, body: RecordConversationRequestDto): RecordConversationCommand {
         return new RecordConversationCommand(
             childProfileId,
-            dto.conversationSessionId,
-            dto.questionText,
-            toBigIntOrNull(dto.imageMediaId),
-            dto.keyword,
-            dto.answerText,
+            body.conversationSessionId || null,
+            body.questionText,
+            toBigIntOrNull(body.imageMediaId),
+            body.keyword,
+            body.answerText,
         );
+    }
+
+    toResponseResult(data: {
+        conversationSessionId: string;
+        questionOrder: number;
+        fisrtMediaId?: bigint | null;
+    }): RecordConversationResponseResult {
+        return {
+            conversationSessionId: data.conversationSessionId,
+            questionOrder: data.questionOrder,
+            firstMediaId: data.fisrtMediaId ?? undefined, // undefined면 응답에서 빠짐
+        };
+    }
+
+    toResponse(result: RecordConversationResponseResult): RecordConversationResponseData {
+        const base: RecordConversationResponseData = {
+            conversationSessionId: result.conversationSessionId,
+            questionOrder: result.questionOrder,
+        };
+        if (result.firstMediaId != null) {
+            return {...base, firstMediaId: result.firstMediaId.toString() };
+        }
+        return base;
     }
 }
