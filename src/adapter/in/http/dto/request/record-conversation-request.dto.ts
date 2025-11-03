@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator"
+import { IsNotEmpty, IsOptional, IsString, } from "class-validator"
 import { TrimString, TrimToNull } from "../common/transform";
 import { RecordConversationRequestDto as SharedBody } from "pai-shared-types"
 

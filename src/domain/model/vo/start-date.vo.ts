@@ -29,9 +29,32 @@ export class StartDate {
     return new StartDate(`${y}-${m}-${d}`);
   }
 
+  // ISO 문자열로 생성 (alias for fromYmd)
+  static ofISO(iso: string): StartDate {
+    return StartDate.fromYmd(iso);
+  }
+
+  // Date 객체로부터 생성
+  static of(date: Date): StartDate {
+    const y = date.getUTCFullYear();
+    const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(date.getUTCDate()).padStart(2, '0');
+    return new StartDate(`${y}-${m}-${d}`);
+  }
+
   // Prisma(DateTime) 저장용 UTC 00:00 Date로 변환
   toUtcStartOfDay(): Date {
     return new Date(`${this.ymd}T00:00:00.000Z`);
+  }
+
+  // Date 객체로 변환
+  toDate(): Date {
+    return this.toUtcStartOfDay();
+  }
+
+  // ISO 문자열로 변환
+  toISO(): string {
+    return this.ymd;
   }
 
   // 문자열로 꺼낼 때

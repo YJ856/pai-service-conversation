@@ -1,7 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
+type AuthField = 'userId' | 'profileId' | 'profileType';
+
 export const Auth = createParamDecorator(
-    (field: 'userId' | 'profileId' | undefined, ctx: ExecutionContext) => {
+    (field: AuthField | undefined, ctx: ExecutionContext) => {
         const req = ctx.switchToHttp().getRequest() as any;
         const { auth } = req;
 
@@ -10,8 +12,14 @@ export const Auth = createParamDecorator(
                 ? {
                       userId: auth.userId ? Number(auth.userId) : undefined,
                       profileId: auth.profileId ? Number(auth.profileId) : undefined,
+                      profileType: auth.profileType ? String(auth.profileType) : undefined,
                   }
                 : undefined;
+        }
+
+        if (field === 'profileType') {
+            const value = auth?.profileType;
+            return value === 'child' || value === 'parent' ? value : undefined;
         }
 
         const value = auth?.[field];
