@@ -8,7 +8,7 @@ import { GetConversationsQueryParam } from '../dto/request/get-conversations-req
 export class GetConversationsMapper {
   toCommand(query: GetConversationsQueryParam): GetConversationsCommand {
     return new GetConversationsCommand(
-      query.childId,
+      query.childProfileId,
       query.date,
       query.cursor,
       query.limit,

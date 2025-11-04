@@ -6,7 +6,7 @@ export class GetConversationsQueryParam implements SharedQuery {
   @ToNumber()
   @IsInt()
   @IsPositive()
-  childId!: number;
+  childProfileId!: number;
 
   @IsOptional()
   @IsString()

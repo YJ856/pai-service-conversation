@@ -41,13 +41,13 @@ export class RedisSessionRepositoryAdapter implements SessionRepositoryPort {
       const snapshot: ConversationSnapshot = JSON.parse(data);
 
       // Question 객체들 재구성
-      const questions = snapshot.questions.map((q) =>
+      const questions = snapshot.questions.map((question) =>
         Question.create({
-          order: QuestionOrder.of(q.order),
-          questionText: q.questionText,
-          imageMediaId: q.imageMediaId ? BigInt(q.imageMediaId) : null,
-          keyword: q.keyword,
-          answerText: q.answerText,
+          order: QuestionOrder.create(question.order),
+          questionText: question.questionText,
+          imageMediaId: question.imageMediaId ? BigInt(question.imageMediaId) : null,
+          keyword: question.keyword,
+          answerText: question.answerText,
         })
       );
 
@@ -76,12 +76,12 @@ export class RedisSessionRepositoryAdapter implements SessionRepositoryPort {
     const snapshot: ConversationSnapshot = {
       childProfileId: conversation.getChildProfileId(),
       startDate: conversation.getStartDate().toISO(),
-      questions: conversation.getQuestions().map((q) => ({
-        order: q.getOrder().value,
-        questionText: q.getQuestionText(),
-        imageMediaId: q.getImageMediaId()?.toString() ?? null,
-        keyword: q.getKeyword(),
-        answerText: q.getAnswerText(),
+      questions: conversation.getQuestions().map((question) => ({
+        order: question.getOrder().value,
+        questionText: question.getQuestionText(),
+        imageMediaId: question.getImageMediaId()?.toString() ?? null,
+        keyword: question.getKeyword(),
+        answerText: question.getAnswerText(),
       })),
     };
 
