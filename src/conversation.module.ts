@@ -32,6 +32,7 @@ import { UuidIdGeneratorAdapter } from './adapter/out/id/uuid-id-generator.adapt
 
 // Adapters - HTTP
 import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.adapter';
+import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-version.query.adapter';
 
 @Module({
   imports: [
@@ -69,6 +70,10 @@ import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.ada
     {
       provide: CONVERSATION_TOKENS.SessionRepositoryPort,
       useClass: RedisSessionRepositoryAdapter,
+    },
+    {
+      provide: CONVERSATION_TOKENS.TokenVersionQueryPort,
+      useClass: RedisTokenVersionQueryAdapter,
     },
 
     // Ports - Conversation Repository

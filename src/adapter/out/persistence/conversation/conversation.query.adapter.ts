@@ -67,7 +67,7 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     }));
   }
 
-  async findById(conversationId: bigint): Promise<Conversation | null> {
+  async findDetailConversationById(conversationId: bigint): Promise<Conversation | null> {
     const row = await this.prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
@@ -85,14 +85,14 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     if (!row) return null;
 
     // 도메인 객체로 변환
-    const questions = row.questions.map((q) =>
+    const questions = row.questions.map((question) =>
       Question.rehydrate({
-        id: q.id,
-        order: QuestionOrder.create(q.questionOrder),
-        questionText: q.questionText,
-        imageMediaId: q.imageMediaId,
-        keyword: q.keyword,
-        answerText: q.answer?.answerText ?? '',
+        id: question.id,
+        order: QuestionOrder.create(question.questionOrder),
+        questionText: question.questionText,
+        imageMediaId: question.imageMediaId,
+        keyword: question.keyword,
+        answerText: question.answer?.answerText ?? '',
       })
     );
 

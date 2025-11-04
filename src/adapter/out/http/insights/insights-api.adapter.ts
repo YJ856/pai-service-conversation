@@ -42,7 +42,8 @@ export class InsightsApiAdapter implements InsightsApiPort {
       if (!data.title) {
         throw new Error('Insights API did not return a title');
       }
-
+      console.log(data);
+      
       return data.title;
     } catch (error) {
       console.error('Failed to generate title from Insights API:', error);

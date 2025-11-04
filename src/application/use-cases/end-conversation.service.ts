@@ -44,7 +44,7 @@ export class EndConversationService implements EndConversationUseCase {
         // 3-2. 키워드 추출 및 Insights API 호출
         const keywords = conversation
             .getQuestions()
-            .map(q => q.getKeyword())
+            .map(question => question.getKeyword())
             .filter((keyword): keyword is string => keyword != null && keyword.trim() !== '');
 
         // 3-3. Insights API로부터 제목 생성

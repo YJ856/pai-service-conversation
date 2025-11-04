@@ -15,31 +15,25 @@ export class GetConversationDetailService implements GetConversationDetailUseCas
   ) {}
 
   async execute(command: GetConversationDetailCommand): Promise<GetConversationDetailResult> {
-    // 1. 대화 조회
-    const conversation = await this.conversationQuery.findById(command.conversationId);
+
+    const conversation = await this.conversationQuery.findDetailConversationById(command.conversationId);
 
     if (!conversation) {
       throw new NotFoundException('CONVERSATION_NOT_FOUND');
     }
 
-    // 2. 권한 확인 (자녀 프로필 일치 여부)
-    if (conversation.getChildProfileId() !== command.childProfileId) {
-      throw new ForbiddenException('ACCESS_DENIED');
-    }
-
-    // 3. 결과 반환
     return {
       conversationId: conversation.getId()!,
       childProfileId: conversation.getChildProfileId(),
       startDate: conversation.getStartDate().toISO(),
       title: conversation.getTitle(),
       firstMediaId: conversation.getFirstMediaId(),
-      items: conversation.getQuestions().map((q) => ({
-        order: q.getOrder().value,
-        questionText: q.getQuestionText(),
-        answerText: q.getAnswerText(),
-        imageMediaId: q.getImageMediaId(),
-        keyword: q.getKeyword(),
+      items: conversation.getQuestions().map((question) => ({
+        order: question.getOrder().value,
+        questionText: question.getQuestionText(),
+        answerText: question.getAnswerText(),
+        imageMediaId: question.getImageMediaId(),
+        keyword: question.getKeyword(),
       })),
     };
   }
