@@ -36,11 +36,11 @@ import { GetConversationDetailPathParam } from '../dto/request/get-conversation-
 import { GetConversationDetailMapper } from '../mapper/get-conversation-detail.mapper';
 import type { GetConversationDetailUseCase } from 'src/application/port/in/get-conversation-detail.usecase';
 
-import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { CONVERSATION_TOKENS } from 'src/conversation.token';
 
 
-@UseGuards(BasicAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('api/conversations')
 export class ConversationController {
     constructor(

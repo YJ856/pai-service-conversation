@@ -34,6 +34,7 @@ import { UuidIdGeneratorAdapter } from './adapter/out/id/uuid-id-generator.adapt
 import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.adapter';
 import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-version.query.adapter';
 import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-request.mapper';
+import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-requ
   ],
   controllers: [ConversationController],
   providers: [
+    AuthGuard,
     // Mappers
     RecordConversationMapper,
     EndConversationMapper,

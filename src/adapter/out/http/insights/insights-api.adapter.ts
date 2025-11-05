@@ -24,7 +24,8 @@ export class InsightsApiAdapter implements InsightsApiPort {
     const url = `${this.insightsApiBaseUrl}/api/insights/analytics`;
     const authorization = this.normalizeBearer(this.request.headers.authorization);
     const data = this.insightRequestMapper.toRequestDto(conversationId, profileId, keywords)
-    console.log(authorization)
+    console.log('Original auth header:', this.request.headers.authorization)
+    console.log('Normalized auth:', authorization)
     const response = await fetch(url, {
       method: 'POST',
       headers: {
