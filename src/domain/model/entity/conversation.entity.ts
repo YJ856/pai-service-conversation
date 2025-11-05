@@ -93,7 +93,7 @@ export class Conversation {
     this._title = trimmedTitle;
   }
 
-   private ensureNotEnded(): void {
+  private ensureNotEnded(): void {
     if (this._ended) throw new Error('CONVERSATION_ALREADY_ENDED');
   }
 

@@ -23,6 +23,7 @@ export class EndConversationService implements EndConversationUseCase {
     ) {}
 
     async execute(command: EndConversationCommand): Promise<EndConversationResponseResult> {
+
         // 1. Redis에서 세션 로드
         const conversation = await this.sessionRepository.load(command.conversationSessionId);
 
@@ -41,19 +42,22 @@ export class EndConversationService implements EndConversationUseCase {
         // 3-1. 대화 종료 표시
         conversation.end();
 
-        // 3-2. 키워드 추출 및 Insights API 호출
+        // 3-2. 키워드 추출 및 제목 설정
+        const title = conversation.getQuestions()[0].getKeyword()!;
         const keywords = conversation
             .getQuestions()
             .map(question => question.getKeyword())
             .filter((keyword): keyword is string => keyword != null && keyword.trim() !== '');
-
-        // 3-3. Insights API로부터 제목 생성
-        const title = await this.insightsApi.generateTitle(keywords);
         conversation.setTitleFromInsight(title);
 
-        // 3-4. DB에 저장
+        // 3-3. DB에 저장
         const savedConversation = await this.conversationRepository.save(conversation);
-
+        const conversationId = savedConversation.getId();
+        const profileId = command.childProfileId;
+ 
+        // // 3-4. Insights API에 데이터 전달
+        await this.insightsApi.generateTitle(conversationId, profileId, keywords);
+        
         // 3-5. Redis에서 삭제
         await this.sessionRepository.delete(command.conversationSessionId);
 

@@ -33,6 +33,7 @@ import { UuidIdGeneratorAdapter } from './adapter/out/id/uuid-id-generator.adapt
 // Adapters - HTTP
 import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.adapter';
 import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-version.query.adapter';
+import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-request.mapper';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-v
     EndConversationMapper,
     GetConversationsMapper,
     GetConversationDetailMapper,
+    InsightRequestMapper,
 
     // Use Cases
     {

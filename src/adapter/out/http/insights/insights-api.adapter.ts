@@ -3,14 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 import type { Request } from 'express';
 import type { InsightsApiPort } from '../../../../application/port/out/insights-api.port';
-
-interface AnalyticsRequest {
-  keywords: string[];
-}
-
-interface AnalyticsResponse {
-  title: string;
-}
+import { InsightRequestMapper } from 'src/adapter/in/http/mapper/insights-api-request.mapper';
 
 @Injectable({ scope: Scope.REQUEST })
 export class InsightsApiAdapter implements InsightsApiPort {
@@ -19,44 +12,34 @@ export class InsightsApiAdapter implements InsightsApiPort {
   constructor(
     private readonly configService: ConfigService,
     @Inject(REQUEST) private readonly request: Request,
+
+    @Inject()
+    private readonly insightRequestMapper: InsightRequestMapper,
   ) {
     this.insightsApiBaseUrl =
       this.configService.get<string>('INSIGHTS_API_URL') || 'http://localhost:3003';
   }
 
-  async generateTitle(keywords: string[]): Promise<string> {
-    try {
-      const url = `${this.insightsApiBaseUrl}/api/insights/analytics`;
-      const authorization = this.normalizeBearer(this.request.headers.authorization);
+  async generateTitle(conversationId:bigint, profileId: number, keywords: string[]): Promise<void> {
+    const url = `${this.insightsApiBaseUrl}/api/insights/analytics`;
+    const authorization = this.normalizeBearer(this.request.headers.authorization);
+    const data = this.insightRequestMapper.toRequestDto(conversationId, profileId, keywords)
+    console.log(authorization)
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authorization ? { Authorization: authorization } : {}),
+      },
+      // body: JSON.stringify({ conversationId: String(conversationId), childId: String(profileId), extractedKeywords: keywords } as CreateAnalyticsRequestDto),
+      body: JSON.stringify(data)
+    });
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(authorization ? { Authorization: authorization } : {}),
-        },
-        body: JSON.stringify({ keywords } as AnalyticsRequest),
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Insights API returned ${response.status}: ${response.statusText}`
-        );
-      }
-
-      const data: AnalyticsResponse = await response.json();
-
-      if (!data.title) {
-        throw new Error('Insights API did not return a title');
-      }
-      console.log(data);
-
-      return data.title;
-    } catch (error) {
-      console.error('Failed to generate title from Insights API:', error);
-      // 실패 시 기본 제목 반환
-      return '대화 기록';
-    }
+    if (!response.ok) {
+      throw new Error(
+        `Insights API returned ${response.status}: ${response.statusText}`
+      );
+    }  
   }
 
   private normalizeBearer(authorizationHeader?: string): string | undefined {
