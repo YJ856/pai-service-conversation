@@ -18,6 +18,7 @@ import type {
     EndConversationResponseData,
     GetConversationsResponseData,
     GetConversationDetailResponseData,
+    GetConversationsCalendarResponseData,
 } from 'pai-shared-types';
 
 import { RecordConversationRequestDto } from '../dto/request/record-conversation-request.dto';
@@ -35,6 +36,10 @@ import type { GetConversationsUseCase } from 'src/application/port/in/get-conver
 import { GetConversationDetailPathParam } from '../dto/request/get-conversation-detail-request.dto';
 import { GetConversationDetailMapper } from '../mapper/get-conversation-detail.mapper';
 import type { GetConversationDetailUseCase } from 'src/application/port/in/get-conversation-detail.usecase';
+
+import { GetConversationsCalendarQueryParam } from '../dto/request/get-conversations-calendar-request.dto';
+import { GetConversationsCalendarMapper } from '../mapper/get-conversations-calendar.mapper';
+import type { GetConversationsCalendarUseCase } from 'src/application/port/in/get-conversations-calendar.usecase';
 
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CONVERSATION_TOKENS } from 'src/conversation.token';
@@ -59,6 +64,10 @@ export class ConversationController {
         @Inject(CONVERSATION_TOKENS.GetConversationDetailUseCase)
         private readonly getConversationDetailUseCase: GetConversationDetailUseCase,
         private readonly getConversationDetailMapper: GetConversationDetailMapper,
+
+        @Inject(CONVERSATION_TOKENS.GetConversationsCalendarUseCase)
+        private readonly getConversationsCalendarUseCase: GetConversationsCalendarUseCase,
+        private readonly getConversationsCalendarMapper: GetConversationsCalendarMapper,
     ) {}
 
     @Post('record')
@@ -104,5 +113,16 @@ export class ConversationController {
         const result = await this.getConversationDetailUseCase.execute(command);
         const data = this.getConversationDetailMapper.toResponse(result);
         return { success: true, message: '대화 상세 조회 성공', data };
+    }
+
+    @Get('calendar')
+    async getConversationsCalendar(
+        @Auth('profileId') parentProfileId: number,
+        @Query() query: GetConversationsCalendarQueryParam,
+    ): Promise<BaseResponse<GetConversationsCalendarResponseData>> {
+        const command = this.getConversationsCalendarMapper.toCommand(query, parentProfileId);
+        const result = await this.getConversationsCalendarUseCase.execute(command);
+        const data = this.getConversationsCalendarMapper.toResponse(result);
+        return { success: true, message: '달별 대화 요약 조회 성공', data };
     }
 }

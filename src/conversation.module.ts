@@ -11,12 +11,14 @@ import { RecordConversationMapper } from './adapter/in/http/mapper/record-conver
 import { EndConversationMapper } from './adapter/in/http/mapper/end-conversation.mapper';
 import { GetConversationsMapper } from './adapter/in/http/mapper/get-conversations.mapper';
 import { GetConversationDetailMapper } from './adapter/in/http/mapper/get-conversation-detail.mapper';
+import { GetConversationsCalendarMapper } from './adapter/in/http/mapper/get-conversations-calendar.mapper';
 
 // Use Cases
 import { RecordConversationService } from './application/use-cases/record-conversation.service';
 import { EndConversationService } from './application/use-cases/end-conversation.service';
 import { GetConversationsService } from './application/use-cases/get-conversations.service';
 import { GetConversationDetailService } from './application/use-cases/get-conversation-detail.service';
+import { GetConversationsCalendarService } from './application/use-cases/get-conversations-calendar.service';
 
 // Adapters - Cache
 import { RedisModule } from './adapter/out/cache/redis.module';
@@ -51,6 +53,7 @@ import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
     GetConversationsMapper,
     GetConversationDetailMapper,
     InsightRequestMapper,
+    GetConversationsCalendarMapper,
 
     // Use Cases
     {
@@ -68,6 +71,10 @@ import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
     {
       provide: CONVERSATION_TOKENS.GetConversationDetailUseCase,
       useClass: GetConversationDetailService,
+    },
+    {
+      provide: CONVERSATION_TOKENS.GetConversationsCalendarUseCase,
+      useClass: GetConversationsCalendarService,
     },
 
     // Ports - Session Repository

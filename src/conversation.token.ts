@@ -6,6 +6,7 @@ export const CONVERSATION_TOKENS = {
   EndConversationUseCase: Symbol('EndConversationUseCase'),
   GetConversationsUseCase: Symbol('GetConversationsUseCase'),
   GetConversationDetailUseCase: Symbol('GetConversationDetailUseCase'),
+  GetConversationsCalendarUseCase: Symbol('GetConversationsCalendarUseCase'),
 
   // Ports
   SessionRepositoryPort: Symbol('SessionRepositoryPort'),

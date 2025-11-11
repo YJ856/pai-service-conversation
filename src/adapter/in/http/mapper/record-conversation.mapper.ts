@@ -30,12 +30,12 @@ export class RecordConversationMapper {
     toResponseResult(data: {
         conversationSessionId: string;
         questionOrder: number;
-        fisrtMediaId?: bigint | null;
+        firstMediaId?: bigint | null;
     }): RecordConversationResponseResult {
         return {
             conversationSessionId: data.conversationSessionId,
             questionOrder: data.questionOrder,
-            firstMediaId: data.fisrtMediaId ?? undefined, // undefined면 응답에서 빠짐
+            firstMediaId: data.firstMediaId ?? undefined, // undefined면 응답에서 빠짐
         };
     }
 
