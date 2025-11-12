@@ -4,6 +4,7 @@ import type {
   ConversationQueryPort,
   ConversationListItem,
   GetConversationsParams,
+  DailyChildCountRow,
 } from '../../../../application/port/out/conversation.query.port';
 import { Conversation } from '../../../../domain/model/entity/conversation.entity';
 import { Question } from '../../../../domain/model/entity/question.entity';
@@ -105,6 +106,40 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
       firstMediaId: row.firstMediaId,
       questions,
     });
+  }
+
+  async getDailyConversationCounts(params: { year: number; month: number; childProfileIds: number[] }): Promise<DailyChildCountRow[]> {
+    const { year, month, childProfileIds } = params;
+
+    if (!childProfileIds?.length) return [];
+
+    // 해당 월의 시작일과 종료일 계산
+    const startDate = new Date(Date.UTC(year, month - 1, 1));
+    const endDate = new Date(Date.UTC(year, month, 1));
+
+    const rows = await this.prisma.$queryRaw<Array<{
+      date: Date;
+      childProfileId: number;
+      count: bigint;
+    }>>`
+      SELECT
+        "startDate" as date,
+        "childProfileId",
+        COUNT(*) as count
+      FROM "Conversation"
+      WHERE "childProfileId" = ANY(${childProfileIds})
+        AND "startDate" >= ${startDate}::date
+        AND "startDate" < ${endDate}::date
+      GROUP BY "startDate", "childProfileId"
+      ORDER BY "startDate", "childProfileId"
+    `;
+
+    // 결과 변환
+    return rows.map((row) => ({
+      date: this.dateToYmd(row.date),
+      childProfileId: row.childProfileId,
+      count: Number(row.count),
+    }));
   }
 
   private dateToYmd(date: Date): string {

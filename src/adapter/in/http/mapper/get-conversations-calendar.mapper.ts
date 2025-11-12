@@ -6,11 +6,10 @@ import { GetConversationsCalendarQueryParam } from "../dto/request/get-conversat
 
 @Injectable()
 export class GetConversationsCalendarMapper {
-    toCommand(query: GetConversationsCalendarQueryParam, parentProfileId: number): GetConversationsCalendarCommand {
+    toCommand(query: GetConversationsCalendarQueryParam): GetConversationsCalendarCommand {
         return new GetConversationsCalendarCommand(
             query.year,
             query.month,
-            parentProfileId,
             query.childProfileId,
         );
     }

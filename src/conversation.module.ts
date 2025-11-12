@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 import { CONVERSATION_TOKENS } from './conversation.token';
 
@@ -34,6 +35,7 @@ import { UuidIdGeneratorAdapter } from './adapter/out/id/uuid-id-generator.adapt
 
 // Adapters - HTTP
 import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.adapter';
+import { ProfileDirectoryHttpAdapter } from './adapter/out/http/user/user-api.adapter';
 import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-version.query.adapter';
 import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-request.mapper';
 import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
@@ -41,6 +43,7 @@ import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
 @Module({
   imports: [
     ConfigModule,
+    HttpModule,
     RedisModule,
     PrismaModule,
   ],
@@ -109,6 +112,12 @@ import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
     {
       provide: CONVERSATION_TOKENS.InsightsApiPort,
       useClass: InsightsApiAdapter,
+    },
+
+    // Ports - User API
+    {
+      provide: CONVERSATION_TOKENS.UserApiPort,
+      useClass: ProfileDirectoryHttpAdapter,
     },
   ],
 })

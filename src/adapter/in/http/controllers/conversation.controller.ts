@@ -104,6 +104,16 @@ export class ConversationController {
         return { success: true, message: '대화 목록 조회 성공', data };
     }
 
+    @Get('calendar')
+    async getConversationsCalendar(
+        @Query() query: GetConversationsCalendarQueryParam,
+    ): Promise<BaseResponse<GetConversationsCalendarResponseData>> {
+        const command = this.getConversationsCalendarMapper.toCommand(query);
+        const result = await this.getConversationsCalendarUseCase.execute(command);
+        const data = this.getConversationsCalendarMapper.toResponse(result);
+        return { success: true, message: '달별 대화 요약 조회 성공', data };
+    }
+
     @Get(':conversationId')
     async getConversationDetail(
         @Auth('profileId') childProfileId: number,
@@ -113,16 +123,5 @@ export class ConversationController {
         const result = await this.getConversationDetailUseCase.execute(command);
         const data = this.getConversationDetailMapper.toResponse(result);
         return { success: true, message: '대화 상세 조회 성공', data };
-    }
-
-    @Get('calendar')
-    async getConversationsCalendar(
-        @Auth('profileId') parentProfileId: number,
-        @Query() query: GetConversationsCalendarQueryParam,
-    ): Promise<BaseResponse<GetConversationsCalendarResponseData>> {
-        const command = this.getConversationsCalendarMapper.toCommand(query, parentProfileId);
-        const result = await this.getConversationsCalendarUseCase.execute(command);
-        const data = this.getConversationsCalendarMapper.toResponse(result);
-        return { success: true, message: '달별 대화 요약 조회 성공', data };
     }
 }
