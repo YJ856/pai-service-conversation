@@ -15,4 +15,5 @@ export const CONVERSATION_TOKENS = {
   ConversationQueryPort: Symbol('ConversationQueryPort'),
   InsightsApiPort: Symbol('InsightsApiPort'),
   UserApiPort: Symbol('UserApiPort'),
+  MediaApiPort: Symbol('MediaApiPort'),
 };

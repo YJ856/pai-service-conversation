@@ -36,6 +36,7 @@ import { UuidIdGeneratorAdapter } from './adapter/out/id/uuid-id-generator.adapt
 // Adapters - HTTP
 import { InsightsApiAdapter } from './adapter/out/http/insights/insights-api.adapter';
 import { ProfileDirectoryHttpAdapter } from './adapter/out/http/user/user-api.adapter';
+import { MediaApiAdapter } from './adapter/out/http/media/media-api.adapter';
 import { RedisTokenVersionQueryAdapter } from './adapter/out/cache/redis-token-version.query.adapter';
 import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-request.mapper';
 import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
@@ -118,6 +119,12 @@ import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
     {
       provide: CONVERSATION_TOKENS.UserApiPort,
       useClass: ProfileDirectoryHttpAdapter,
+    },
+
+    // Ports - Media API
+    {
+      provide: CONVERSATION_TOKENS.MediaApiPort,
+      useClass: MediaApiAdapter,
     },
   ],
 })
