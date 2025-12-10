@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -22,7 +21,7 @@ model Conversation {
 model Question {
   id              BigInt    @id @default(autoincrement())
   conversationId  BigInt
-  questionOrder   BigInt
+  questionOrder   Int
   questionText    String
   imageMediaId    BigInt?
   keyword         String?
@@ -31,12 +30,12 @@ model Question {
   answer      Answer?
 
   @@index([conversationId])
+  @@index([conversationId, questionOrder])
   @@unique([conversationId, questionOrder])
 }
 
 model Answer {
-  id            BigInt    @id @default(autoincrement())
-  questionId    BigInt    @unique
+  questionId    BigInt    @id // questionId에 1:1 매칭
   answerText    String
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
