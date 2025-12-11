@@ -1,7 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable, Inject, UnauthorizedException } from '@nestjs/common';
-import { verifyAccessToken } from '../token.verifier';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Inject,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { verifyAccessToken, type AuthClaims } from '../token.verifier';
 import type { TokenVersionQueryPort } from '../../../../../application/port/out/token-version.query.port';
 import { CONVERSATION_TOKENS } from '../../../../../conversation.token';
+import type { Request } from 'express';
 
 /**
  * Basic 토큰 검증 Guard
@@ -17,17 +24,21 @@ export class BasicAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest() as any;
+    const req = context.switchToHttp().getRequest<Request>();
 
     // 1) Bearer 토큰 추출
-    const authHeader = req.headers['authorization'] as string | undefined;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const authHeader = req.headers['authorization'];
+    if (
+      !authHeader ||
+      typeof authHeader !== 'string' ||
+      !authHeader.startsWith('Bearer ')
+    ) {
       throw new UnauthorizedException('UNAUTHORIZED: Bearer token required');
     }
     const token = authHeader.slice('Bearer '.length).trim();
 
     // 2) 서명/만료 검증 + 클레임 추출
-    let claims;
+    let claims: AuthClaims;
     try {
       claims = await verifyAccessToken(token);
     } catch {

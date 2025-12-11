@@ -38,17 +38,19 @@ export class RedisSessionRepositoryAdapter implements SessionRepositoryPort {
     if (!data) return null;
 
     try {
-      const snapshot: ConversationSnapshot = JSON.parse(data);
+      const snapshot = JSON.parse(data) as ConversationSnapshot;
 
       // Question 객체들 재구성
       const questions = snapshot.questions.map((question) =>
         Question.create({
           order: QuestionOrder.create(question.order),
           questionText: question.questionText,
-          imageMediaId: question.imageMediaId ? BigInt(question.imageMediaId) : null,
+          imageMediaId: question.imageMediaId
+            ? BigInt(question.imageMediaId)
+            : null,
           keyword: question.keyword,
           answerText: question.answerText,
-        })
+        }),
       );
 
       // Conversation 객체 재구성
@@ -85,12 +87,7 @@ export class RedisSessionRepositoryAdapter implements SessionRepositoryPort {
       })),
     };
 
-    await this.redis.set(
-      key,
-      JSON.stringify(snapshot),
-      'EX',
-      this.TTL_SECONDS
-    );
+    await this.redis.set(key, JSON.stringify(snapshot), 'EX', this.TTL_SECONDS);
   }
 
   async delete(sessionId: string): Promise<void> {

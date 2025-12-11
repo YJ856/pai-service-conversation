@@ -8,7 +8,7 @@
  * 예: "MjAyNS0xMS0wM3wxMjM0NQ==" → { startDateYmd: "2025-11-03", conversationId: 12345n }
  */
 export function decodeCompositeCursor(
-  cursor: string | null
+  cursor: string | null,
 ): { startDateYmd: string; conversationId: bigint } | null {
   if (!cursor) return null;
   try {
@@ -37,9 +37,11 @@ export function decodeCompositeCursor(
  */
 export function encodeCompositeCursor(
   startDateYmd: string,
-  conversationId: bigint | number
+  conversationId: bigint | number,
 ): string {
-  const payload = JSON.stringify(`${startDateYmd}|${conversationId.toString()}`);
+  const payload = JSON.stringify(
+    `${startDateYmd}|${conversationId.toString()}`,
+  );
   return Buffer.from(payload, 'utf8').toString('base64');
 }
 

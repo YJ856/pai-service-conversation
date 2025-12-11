@@ -10,16 +10,19 @@ import { Conversation } from '../../../../domain/model/entity/conversation.entit
 import { Question } from '../../../../domain/model/entity/question.entity';
 import { StartDate } from '../../../../domain/model/vo/start-date.vo';
 import { QuestionOrder } from '../../../../domain/model/vo/question-order.vo';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ConversationQueryAdapter implements ConversationQueryPort {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findConversations(params: GetConversationsParams): Promise<ConversationListItem[]> {
+  async findConversations(
+    params: GetConversationsParams,
+  ): Promise<ConversationListItem[]> {
     const { childProfileId, date, cursor, limit } = params;
 
     // WHERE 조건 구성
-    const where: any = {
+    const where: Prisma.ConversationWhereInput = {
       childProfileId,
     };
 
@@ -46,10 +49,7 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     // 조회 (limit + 1개)
     const rows = await this.prisma.conversation.findMany({
       where,
-      orderBy: [
-        { startDate: 'desc' },
-        { id: 'desc' },
-      ],
+      orderBy: [{ startDate: 'desc' }, { id: 'desc' }],
       take: limit + 1,
       select: {
         id: true,
@@ -68,7 +68,9 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     }));
   }
 
-  async findDetailConversationById(conversationId: bigint): Promise<Conversation | null> {
+  async findDetailConversationById(
+    conversationId: bigint,
+  ): Promise<Conversation | null> {
     const row = await this.prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
@@ -94,7 +96,7 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
         imageMediaId: question.imageMediaId,
         keyword: question.keyword,
         answerText: question.answer?.answerText ?? '',
-      })
+      }),
     );
 
     return Conversation.rehydrate({
@@ -108,7 +110,11 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     });
   }
 
-  async getDailyConversationCounts(params: { year: number; month: number; childProfileIds: number[] }): Promise<DailyChildCountRow[]> {
+  async getDailyConversationCounts(params: {
+    year: number;
+    month: number;
+    childProfileIds: number[];
+  }): Promise<DailyChildCountRow[]> {
     const { year, month, childProfileIds } = params;
 
     if (!childProfileIds?.length) return [];
@@ -117,11 +123,13 @@ export class ConversationQueryAdapter implements ConversationQueryPort {
     const startDate = new Date(Date.UTC(year, month - 1, 1));
     const endDate = new Date(Date.UTC(year, month, 1));
 
-    const rows = await this.prisma.$queryRaw<Array<{
-      date: Date;
-      childProfileId: number;
-      count: bigint;
-    }>>`
+    const rows = await this.prisma.$queryRaw<
+      Array<{
+        date: Date;
+        childProfileId: number;
+        count: bigint;
+      }>
+    >`
       SELECT
         "startDate" as date,
         "childProfileId",

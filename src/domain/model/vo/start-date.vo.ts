@@ -1,4 +1,3 @@
-
 export class StartDate {
   private constructor(readonly ymd: string) {
     Object.freeze(this);
@@ -13,7 +12,10 @@ export class StartDate {
     }
     // 달력 유효성(02/30 등) 검증: 파싱→ISO 왕복 비교
     const date = new Date(`${trimmedYmd}T00:00:00.000Z`);
-    if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== trimmedYmd) {
+    if (
+      Number.isNaN(date.getTime()) ||
+      date.toISOString().slice(0, 10) !== trimmedYmd
+    ) {
       throw new Error('Invalid calendar date for StartDate');
     }
     return new StartDate(trimmedYmd);

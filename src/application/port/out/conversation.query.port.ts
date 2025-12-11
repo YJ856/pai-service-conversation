@@ -10,9 +10,9 @@ export interface ConversationListItem {
 export interface GetConversationsParams {
   readonly childProfileId: number;
   readonly date?: string; // yyyy-MM-dd
-  readonly cursor?: { 
-    readonly startDateYmd: string, 
-    readonly conversationId: bigint 
+  readonly cursor?: {
+    readonly startDateYmd: string;
+    readonly conversationId: bigint;
   };
   readonly limit: number;
 }
@@ -24,14 +24,17 @@ export interface DailyChildCountRow {
 }
 
 export interface ConversationQueryPort {
+  findConversations(
+    params: GetConversationsParams,
+  ): Promise<ConversationListItem[]>;
 
-  findConversations(params: GetConversationsParams): Promise<ConversationListItem[]>;
-
-  findDetailConversationById(conversationId: bigint): Promise<Conversation | null>;
+  findDetailConversationById(
+    conversationId: bigint,
+  ): Promise<Conversation | null>;
 
   getDailyConversationCounts(params: {
-    year: number,
-    month: number,
+    year: number;
+    month: number;
     childProfileIds: number[];
   }): Promise<DailyChildCountRow[]>;
 }

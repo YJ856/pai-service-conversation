@@ -7,7 +7,9 @@ import { StartDate } from '../../../../domain/model/vo/start-date.vo';
 import { QuestionOrder } from '../../../../domain/model/vo/question-order.vo';
 
 @Injectable()
-export class ConversationRepositoryAdapter implements ConversationRepositoryPort {
+export class ConversationRepositoryAdapter
+  implements ConversationRepositoryPort
+{
   constructor(private readonly prisma: PrismaService) {}
 
   async save(conversation: Conversation): Promise<Conversation> {
@@ -73,7 +75,7 @@ export class ConversationRepositoryAdapter implements ConversationRepositoryPort
           imageMediaId: question.imageMediaId,
           keyword: question.keyword,
           answerText: question.answer?.answerText ?? '',
-        })
+        }),
       );
 
       return Conversation.rehydrate({

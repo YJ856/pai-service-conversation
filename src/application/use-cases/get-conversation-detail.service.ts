@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type { GetConversationDetailUseCase } from '../port/in/get-conversation-detail.usecase';
 import type { GetConversationDetailResult } from '../port/in/result/get-conversation-detail-result.dto';
@@ -8,15 +8,21 @@ import { GetConversationDetailCommand } from '../command/get-conversation-detail
 import { CONVERSATION_TOKENS } from '../../conversation.token';
 
 @Injectable()
-export class GetConversationDetailService implements GetConversationDetailUseCase {
+export class GetConversationDetailService
+  implements GetConversationDetailUseCase
+{
   constructor(
     @Inject(CONVERSATION_TOKENS.ConversationQueryPort)
     private readonly conversationQuery: ConversationQueryPort,
   ) {}
 
-  async execute(command: GetConversationDetailCommand): Promise<GetConversationDetailResult> {
-
-    const conversation = await this.conversationQuery.findDetailConversationById(command.conversationId);
+  async execute(
+    command: GetConversationDetailCommand,
+  ): Promise<GetConversationDetailResult> {
+    const conversation =
+      await this.conversationQuery.findDetailConversationById(
+        command.conversationId,
+      );
 
     if (!conversation) {
       throw new NotFoundException('CONVERSATION_NOT_FOUND');

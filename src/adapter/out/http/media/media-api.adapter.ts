@@ -13,7 +13,8 @@ export class MediaApiAdapter implements MediaApiPort {
     @Inject(REQUEST) private readonly request: Request,
   ) {
     this.mediaApiBaseUrl =
-      this.configService.get<string>('MEDIA_API_URL') || 'http://localhost:3002';
+      this.configService.get<string>('MEDIA_API_URL') ||
+      'http://localhost:3002';
   }
 
   async batchDelete(mediaIds: bigint[]): Promise<void> {
@@ -22,7 +23,9 @@ export class MediaApiAdapter implements MediaApiPort {
     }
 
     const url = `${this.mediaApiBaseUrl}/api/media/batch`;
-    const authorization = this.normalizeBearer(this.request.headers.authorization);
+    const authorization = this.normalizeBearer(
+      this.request.headers.authorization,
+    );
 
     const response = await fetch(url, {
       method: 'DELETE',
@@ -31,13 +34,13 @@ export class MediaApiAdapter implements MediaApiPort {
         ...(authorization ? { Authorization: authorization } : {}),
       },
       body: JSON.stringify({
-        mediaIds: mediaIds.map(id => id.toString()),
+        mediaIds: mediaIds.map((id) => id.toString()),
       }),
     });
 
     if (!response.ok) {
       console.error(
-        `Media batch delete failed: ${response.status} ${response.statusText}`
+        `Media batch delete failed: ${response.status} ${response.statusText}`,
       );
       // 미디어 삭제 실패는 대화 종료를 막지 않음 (로그만 남김)
     }

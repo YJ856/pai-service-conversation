@@ -18,7 +18,6 @@ export class QuestionOrder {
     return new QuestionOrder(num);
   }
 
-
   // 문자열로 들어오는 경우 편의 팩토리(선택 사용)
   static fromString(str: string): QuestionOrder {
     const parsedNumber = Number(str);
@@ -29,11 +28,17 @@ export class QuestionOrder {
   }
 
   // 다음 순서 값(편의 함수, 필요 없으면 사용 안 해도 됨)
-  next(): QuestionOrder { return new QuestionOrder(this.value + 1); }
+  next(): QuestionOrder {
+    return new QuestionOrder(this.value + 1);
+  }
 
   // 기본 타입 꺼내기
-  toNumber(): number { return this.value; }
-  toString(): string { return String(this.value); }
+  toNumber(): number {
+    return this.value;
+  }
+  toString(): string {
+    return String(this.value);
+  }
 
   // 동등성
   equals(other: QuestionOrder): boolean {

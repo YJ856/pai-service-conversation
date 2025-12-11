@@ -1,4 +1,4 @@
-import { QuestionOrder } from "../vo/question-order.vo";
+import { QuestionOrder } from '../vo/question-order.vo';
 
 export class Question {
   private constructor(
@@ -53,11 +53,22 @@ export class Question {
     );
   }
 
-
-  getId(): bigint | null { return this._id; }
-  getOrder(): QuestionOrder { return this._order; }
-  getQuestionText(): string { return this._questionText; }
-  getImageMediaId(): bigint | null { return this._imageMediaId; }
-  getKeyword(): string | null { return this._keyword; }
-  getAnswerText(): string { return this._answerText; }
+  getId(): bigint | null {
+    return this._id;
+  }
+  getOrder(): QuestionOrder {
+    return this._order;
+  }
+  getQuestionText(): string {
+    return this._questionText;
+  }
+  getImageMediaId(): bigint | null {
+    return this._imageMediaId;
+  }
+  getKeyword(): string | null {
+    return this._keyword;
+  }
+  getAnswerText(): string {
+    return this._answerText;
+  }
 }

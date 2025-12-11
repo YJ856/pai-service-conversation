@@ -42,12 +42,7 @@ import { InsightRequestMapper } from './adapter/in/http/mapper/insights-api-requ
 import { AuthGuard } from './adapter/in/http/auth/guards/auth.guard';
 
 @Module({
-  imports: [
-    ConfigModule,
-    HttpModule,
-    RedisModule,
-    PrismaModule,
-  ],
+  imports: [ConfigModule, HttpModule, RedisModule, PrismaModule],
   controllers: [ConversationController],
   providers: [
     AuthGuard,

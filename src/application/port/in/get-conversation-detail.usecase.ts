@@ -2,5 +2,7 @@ import type { GetConversationDetailCommand } from '../../command/get-conversatio
 import type { GetConversationDetailResult } from './result/get-conversation-detail-result.dto';
 
 export interface GetConversationDetailUseCase {
-  execute(command: GetConversationDetailCommand): Promise<GetConversationDetailResult>;
+  execute(
+    command: GetConversationDetailCommand,
+  ): Promise<GetConversationDetailResult>;
 }

@@ -10,6 +10,20 @@ import {
 import { verifyAccessToken, type AuthClaims } from '../token.verifier';
 import type { TokenVersionQueryPort } from 'src/application/port/out/token-version.query.port';
 import { CONVERSATION_TOKENS } from 'src/conversation.token';
+import type { Request } from 'express';
+
+// Express Request 타입을 확장해서 auth 속성 추가
+declare module 'express' {
+  interface Request {
+    auth?: {
+      token: string;
+      userId: string;
+      profileId: string | number | null;
+      profileType: 'parent' | 'child' | null;
+      claims: AuthClaims;
+    };
+  }
+}
 
 /**
  * AuthGuard - 프로필 필수 (부모/자녀 둘 다 허용)
@@ -25,11 +39,15 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // HTTP 요청 객체 가져오기
-    const req = context.switchToHttp().getRequest() as any;
+    const req = context.switchToHttp().getRequest<Request>();
 
     // 1) Bearer 토큰 추출
-    const authHeader = req.headers['authorization'] as string | undefined;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const authHeader = req.headers['authorization'];
+    if (
+      !authHeader ||
+      typeof authHeader !== 'string' ||
+      !authHeader.startsWith('Bearer ')
+    ) {
       throw new UnauthorizedException('UNAUTHORIZED: Bearer token required');
     }
     const token = authHeader.slice('Bearer '.length).trim();
@@ -82,8 +100,8 @@ export class AuthGuard implements CanActivate {
 export class ParentGuard extends AuthGuard {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ok = await super.canActivate(context);
-    const req = context.switchToHttp().getRequest() as any;
-    if (req.auth.profileType !== 'parent') {
+    const req = context.switchToHttp().getRequest<Request>();
+    if (req.auth!.profileType !== 'parent') {
       throw new ForbiddenException('FORBIDDEN: parent profile required');
     }
     return ok;
@@ -98,8 +116,8 @@ export class ParentGuard extends AuthGuard {
 export class ChildGuard extends AuthGuard {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ok = await super.canActivate(context);
-    const req = context.switchToHttp().getRequest() as any;
-    if (req.auth.profileType !== 'child') {
+    const req = context.switchToHttp().getRequest<Request>();
+    if (req.auth!.profileType !== 'child') {
       throw new ForbiddenException('FORBIDDEN: child profile required');
     }
     return ok;

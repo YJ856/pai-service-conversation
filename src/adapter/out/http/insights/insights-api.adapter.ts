@@ -17,27 +17,38 @@ export class InsightsApiAdapter implements InsightsApiPort {
     private readonly insightRequestMapper: InsightRequestMapper,
   ) {
     this.insightsApiBaseUrl =
-      this.configService.get<string>('INSIGHTS_API_URL') || 'http://localhost:3003';
+      this.configService.get<string>('INSIGHTS_API_URL') ||
+      'http://localhost:3003';
   }
 
-  async generateTitle(conversationId:bigint, profileId: number, keywords: string[]): Promise<void> {
+  async generateTitle(
+    conversationId: bigint,
+    profileId: number,
+    keywords: string[],
+  ): Promise<void> {
     const url = `${this.insightsApiBaseUrl}/api/insights/analytics`;
-    const authorization = this.normalizeBearer(this.request.headers.authorization);
-    const data = this.insightRequestMapper.toRequestDto(conversationId, profileId, keywords)
+    const authorization = this.normalizeBearer(
+      this.request.headers.authorization,
+    );
+    const data = this.insightRequestMapper.toRequestDto(
+      conversationId,
+      profileId,
+      keywords,
+    );
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(authorization ? { Authorization: authorization } : {}),
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
       throw new Error(
-        `Insights API returned ${response.status}: ${response.statusText}`
+        `Insights API returned ${response.status}: ${response.statusText}`,
       );
-    }  
+    }
   }
 
   private normalizeBearer(authorizationHeader?: string): string | undefined {

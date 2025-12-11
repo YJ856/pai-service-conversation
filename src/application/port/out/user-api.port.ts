@@ -1,9 +1,7 @@
-
 /**
  * User API Port
  * 가족 프로필 정보 제공하는 외부 API 인터페이스
  */
-
 
 export interface ParentProfileSummary {
   profileId: number;
@@ -22,7 +20,8 @@ export interface FamilyProfileSummary {
   children: ChildProfileSummary[];
 }
 
-
 export interface UserApiPort {
-  getFamilyProfileWithScopeChildren(): Promise<{ children: ChildProfileSummary[] }>;
+  getFamilyProfileWithScopeChildren(): Promise<{
+    children: ChildProfileSummary[];
+  }>;
 }

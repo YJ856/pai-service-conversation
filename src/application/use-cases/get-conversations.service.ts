@@ -6,7 +6,10 @@ import type { ConversationQueryPort } from '../port/out/conversation.query.port'
 
 import { GetConversationsCommand } from '../command/get-conversations.command';
 import { CONVERSATION_TOKENS } from '../../conversation.token';
-import { decodeCompositeCursor, encodeCompositeCursor } from '../../utils/cursor.util';
+import {
+  decodeCompositeCursor,
+  encodeCompositeCursor,
+} from '../../utils/cursor.util';
 
 @Injectable()
 export class GetConversationsService implements GetConversationsUseCase {
@@ -18,10 +21,14 @@ export class GetConversationsService implements GetConversationsUseCase {
     private readonly conversationQuery: ConversationQueryPort,
   ) {}
 
-  async execute(command: GetConversationsCommand): Promise<GetConversationsResult> {
+  async execute(
+    command: GetConversationsCommand,
+  ): Promise<GetConversationsResult> {
     // 1. childProfileId 검증
     if (!command.childProfileId || command.childProfileId <= 0) {
-      throw new BadRequestException('VALIDATION_ERROR: childProfileId required');
+      throw new BadRequestException(
+        'VALIDATION_ERROR: childProfileId required',
+      );
     }
 
     // 2. limit 검증 및 기본값 설정
@@ -31,7 +38,9 @@ export class GetConversationsService implements GetConversationsUseCase {
     }
 
     // 3. 커서 디코딩
-    const cursor = command.cursor ? decodeCompositeCursor(command.cursor) ?? undefined : undefined;
+    const cursor = command.cursor
+      ? (decodeCompositeCursor(command.cursor) ?? undefined)
+      : undefined;
 
     // 4. 조회 (limit + 1개)
     const items = await this.conversationQuery.findConversations({
@@ -49,7 +58,10 @@ export class GetConversationsService implements GetConversationsUseCase {
     let nextCursor: string | null = null;
     if (hasNext && resultItems.length > 0) {
       const lastItem = resultItems[resultItems.length - 1];
-      nextCursor = encodeCompositeCursor(lastItem.startDate, lastItem.conversationId);
+      nextCursor = encodeCompositeCursor(
+        lastItem.startDate,
+        lastItem.conversationId,
+      );
     }
 
     // 7. 결과 반환

@@ -16,7 +16,9 @@ export class GetConversationDetailMapper {
     );
   }
 
-  toResponse(result: GetConversationDetailResult): GetConversationDetailResponseData {
+  toResponse(
+    result: GetConversationDetailResult,
+  ): GetConversationDetailResponseData {
     return {
       conversationId: result.conversationId.toString(), // bigint -> string
       childProfileId: result.childProfileId,

@@ -7,7 +7,7 @@ import { ConversationModule } from './conversation.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
-    ConversationModule
+    ConversationModule,
   ],
 })
 export class AppModule {}

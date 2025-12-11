@@ -1,3 +1,3 @@
 export interface EndConversationResponseResult {
-    conversationId?: bigint;
+  conversationId?: bigint;
 }

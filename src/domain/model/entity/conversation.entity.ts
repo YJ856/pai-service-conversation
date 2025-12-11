@@ -1,5 +1,5 @@
-import { StartDate } from "../vo/start-date.vo";
-import { Question } from "./question.entity";
+import { StartDate } from '../vo/start-date.vo';
+import { Question } from './question.entity';
 
 export class Conversation {
   private _ended: boolean;
@@ -65,10 +65,17 @@ export class Conversation {
       throw new Error('ANSWER_REQUIRED_FOR_QUESTION');
     }
 
-    const hasSameOrder = this._questions.some(questionItem => questionItem.getOrder().value === question.getOrder().value);
+    const hasSameOrder = this._questions.some(
+      (questionItem) =>
+        questionItem.getOrder().value === question.getOrder().value,
+    );
     if (hasSameOrder) throw new Error('DUPLICATE_QUESTION_ORDER');
 
-    const maxOrder = this._questions.reduce((currentMax, questionItem) => Math.max(currentMax, questionItem.getOrder().value), 0);
+    const maxOrder = this._questions.reduce(
+      (currentMax, questionItem) =>
+        Math.max(currentMax, questionItem.getOrder().value),
+      0,
+    );
     if (question.getOrder().value !== maxOrder + 1) {
       throw new Error('ORDER_MUST_BE_CONSECUTIVE');
     }
@@ -77,7 +84,6 @@ export class Conversation {
     if (this._firstMediaId == null && question.getImageMediaId() != null) {
       this._firstMediaId = question.getImageMediaId();
     }
-
   }
 
   end(): void {
@@ -97,11 +103,25 @@ export class Conversation {
     if (this._ended) throw new Error('CONVERSATION_ALREADY_ENDED');
   }
 
-  getId(): bigint | null { return this._id; }
-  getChildProfileId(): number { return this._childProfileId; }
-  getStartDate(): StartDate { return this._startDate; }
-  getTitle(): string | null { return this._title; }
-  isEnded(): boolean { return this._ended; }
-  getFirstMediaId(): bigint | null { return this._firstMediaId; }
-  getQuestions(): readonly Question[] { return this._questions; }
+  getId(): bigint | null {
+    return this._id;
+  }
+  getChildProfileId(): number {
+    return this._childProfileId;
+  }
+  getStartDate(): StartDate {
+    return this._startDate;
+  }
+  getTitle(): string | null {
+    return this._title;
+  }
+  isEnded(): boolean {
+    return this._ended;
+  }
+  getFirstMediaId(): bigint | null {
+    return this._firstMediaId;
+  }
+  getQuestions(): readonly Question[] {
+    return this._questions;
+  }
 }
